@@ -1,0 +1,4 @@
+api:
+  internal:
+    base-uri: "http://localhost:8080"
+    split-uri: "${api.internal.base-uri}/shipments"

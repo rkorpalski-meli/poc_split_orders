@@ -1,0 +1,11 @@
+management:
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        health: /ping
+
+server:
+  servlet:
+    context-path: /shipment
+

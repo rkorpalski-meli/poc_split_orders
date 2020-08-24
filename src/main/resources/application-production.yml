@@ -1,0 +1,3 @@
+api:
+  internal:
+    split-uri: "${api.internal.base-uri}/split"
