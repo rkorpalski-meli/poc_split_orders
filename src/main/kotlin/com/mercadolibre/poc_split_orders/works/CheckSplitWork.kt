@@ -12,8 +12,9 @@ class CheckSplitWork(unitOfWorkType: UnitOfWorkType) : UnitOfWork(unitOfWorkType
     val shipment = ctx.get("shipment") as Shipment
     if(shipment?.id != null) {
       println("Executing Check split")
+      ctx.put("resultSplit", true)
     } else {
-      throw ApiException(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Invalid split")
+      ctx.put("resultSplit", false)
     }
   }
 }

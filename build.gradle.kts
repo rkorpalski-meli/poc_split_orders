@@ -33,6 +33,7 @@ dependencies {
   implementation ("com.mercadolibre:conductor:1.0.3")
   implementation("org.jeasy:easy-flows:0.2")
   implementation ("com.mercadolibre.fbm:fbm-rest-utils:4.35.0")
+  implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
   testImplementation("org.springframework.boot:spring-boot-starter-test") {

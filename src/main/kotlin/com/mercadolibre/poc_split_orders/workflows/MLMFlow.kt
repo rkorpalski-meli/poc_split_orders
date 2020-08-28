@@ -5,13 +5,13 @@ import com.mercadolibre.conductor.workflows.WorkflowExecution
 import com.mercadolibre.poc_split_orders.clients.AuthorizationClient
 import com.mercadolibre.poc_split_orders.clients.TmsClient
 import com.mercadolibre.poc_split_orders.entities.Shipment
+import com.mercadolibre.poc_split_orders.predicate.CheckSplitPredicate
 import com.mercadolibre.poc_split_orders.works.CancelAuthorizationWork
 import com.mercadolibre.poc_split_orders.works.CancelTmsWork
 import com.mercadolibre.poc_split_orders.works.CheckSplitWork
 import com.mercadolibre.poc_split_orders.works.RepeatableTestWork
 import org.jeasy.flows.engine.WorkFlowEngineBuilder
 import org.jeasy.flows.work.WorkContext
-import org.jeasy.flows.work.WorkReportPredicate
 import org.jeasy.flows.workflow.ConditionalFlow.Builder.aNewConditionalFlow
 import org.jeasy.flows.workflow.SequentialFlow.Builder.aNewSequentialFlow
 import org.jeasy.flows.workflow.ParallelFlow.Builder.aNewParallelFlow
@@ -24,12 +24,13 @@ import java.util.concurrent.Executors
 @Service
 class MLMFlow(val authorizationClient: AuthorizationClient, val tmsClient: TmsClient): Flow {
 
+  private val executorService = Executors.newFixedThreadPool(2)
+
   override fun createFlowInstance(): WorkFlow {
-    val  executorService = Executors.newFixedThreadPool(2)
     return aNewSequentialFlow()
       .execute(aNewConditionalFlow()
         .execute(CheckSplitWork(UnitOfWorkType.NON_REPEATABLE))
-        .`when`(WorkReportPredicate.COMPLETED)
+        .`when`(CheckSplitPredicate())
         .then(aNewParallelFlow(executorService)
           .execute(CancelAuthorizationWork(UnitOfWorkType.NON_REPEATABLE, authorizationClient),
             CancelTmsWork(UnitOfWorkType.NON_REPEATABLE, tmsClient)).build())
